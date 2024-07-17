@@ -3,7 +3,6 @@ import raindrop from './raindrop.jpg';
 import Clock from 'react-live-clock';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCloudShowersHeavy, faCircle, faSun, faCloud, faSearch } from '@fortawesome/free-solid-svg-icons';
-// import rain from './rain.jpg'
 
 export default function App() {
   const [temperature, setTemperature] = useState(0);
@@ -61,14 +60,23 @@ export default function App() {
   }
   const handleSearch = (e) => {
     e.preventDefault();
-    fetchURL(change);
+    const url = `https://api.openweathermap.org/data/2.5/weather?q=${encodeURIComponent(change)}&appid=${apiKey}`;
+    fetchURL(url);
   }
 
   const success = (position) => {
     const { latitude, longitude } = position.coords;
-    const url = `https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&appid=${apiKey}`;
+    let url;
+    
+    if (cityName.trim() !== "") {
+      url = `https://api.openweathermap.org/data/2.5/weather?q=${encodeURIComponent(cityName)}&appid=${apiKey}`;
+    } else {
+      url = `https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&appid=${apiKey}`;
+    }
+  
     fetchURL(url);
   }
+  
 
   const error = () => {
     console.error("Unable to retrieve your location");
@@ -99,15 +107,15 @@ export default function App() {
   return (
     <div className='flex flex-col items-center justify-center h-screen'>
       <div className='mb-3'>
-        <form className='flex' action="/">
-          <input onChange={handleChange} className='bg-white mx-2 rounded-2xl w-72 py-1.5 px-2.5 shadow-md focus:outline-slate-400 outline-1' placeholder='Search location or a city name' value={change} type="text" />
-          <button type='submit' onClick={(e)=>handleSearch(e)} className='bg-white mx-3 py-1.5 px-2.5 rounded-3xl shadow-md hover:bg-gray-100 active:bg-gray-200'>
-            <FontAwesomeIcon icon={faSearch}/>
-          </button>
+        <form className='flex' onSubmit={handleSearch}>
+            <input onChange={handleChange} className='bg-white mx-2 rounded-2xl w-72 py-1.5 px-2.5 shadow-md focus:outline-slate-400 outline-1' placeholder='Search location or a city name' value={change} type="text" />
+            <button type='submit' className='bg-white mx-3 py-1.5 px-2.5 rounded-3xl shadow-md hover:bg-gray-100 active:bg-gray-200'>
+              <FontAwesomeIcon icon={faSearch}/>
+            </button>
         </form>
       </div>
       <div className='mb-3 rounded-lg bg-white'>
-        <p className='text-blue-800 text-xl font-semibold px-4 py-1 shadow-lg'>{(message===true)?message:`${cityName}, ${country}`}</p>
+      <p className='text-blue-800 text-xl font-semibold px-4 py-1 shadow-lg'>{message || `${cityName}, ${country}`}</p>
       </div>
       <div className='relative bg-gray-800 rounded-lg h-96 w-96'>
           <img className='opacity-40 absolute inset-0 z-0' src={raindrop} alt="raindrop" />
