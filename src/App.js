@@ -105,7 +105,7 @@ export default function App() {
     // eslint-disable-next-line
   }, [])
   return (
-    <div className='flex flex-col items-center justify-center h-screen'>
+    <div className='flex flex-col items-center justify-center h-screen mx-2'>
       <div className='mb-3'>
         <form className='flex' onSubmit={handleSearch}>
             <input onChange={handleChange} className='bg-white mx-2 rounded-2xl w-72 py-1.5 px-2.5 shadow-md focus:outline-slate-400 outline-1' placeholder='Search location or a city name' value={change} type="text" />
